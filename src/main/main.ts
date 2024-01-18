@@ -1,9 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-require('electron-reload')(__dirname, {
-  electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
-});
+require('electron-reload')(path.join(__dirname, '../renderer'));
+
 let mainWindow: Electron.BrowserWindow | null;
 
 
@@ -20,7 +19,7 @@ function createWindow() {
 
   mainWindow.loadURL(
     url.format({
-      pathname: path.join(__dirname, 'index.html'),
+      pathname: path.join(__dirname,'../', 'index.html'),
       protocol: 'file:',
       slashes: true,
     })
