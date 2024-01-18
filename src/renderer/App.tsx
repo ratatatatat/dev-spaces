@@ -1,17 +1,87 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Accordion, Card, Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { addServiceAction, deleteServiceAction, initiateServicesAction, selectServices } from './redux/slices/service';
+import { UnknownAction } from '@reduxjs/toolkit';
 
 const App = () => {
+    const [serviceName, setServiceName] = useState('');
+    const [serviceDirectory, setServiceDirectory] = useState('');
+    const dispatch = useDispatch();
+    const services = useSelector(selectServices);
+
+    const handleSubmit = () => {
+        dispatch(
+            addServiceAction({
+                name: serviceName,
+                directoryPath: serviceDirectory,
+            }) as any as UnknownAction
+        ); setServiceName('');
+        setServiceDirectory('');
+    };
+
+    useEffect(() => {
+        dispatch(initiateServicesAction() as any);
+    }, []); // dispatch is stable and won't cause unnecessary re-renders
+
+
     return (
-        <div className="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md flex items-center space-x-4">
-  <div className="flex-shrink-0">
-    <img className="h-12 w-12" src="/img/logo.svg" alt="ChitChat Logo" />
-  </div>
-  <div>
-    <div className="text-xl font-medium text-blue">ChitChat</div>
-    <p className="text-gray-500">You have a new message!</p>
-  </div>
-</div>
-    )
+        <Container>
+            <Row>
+                <Col>
+                <Card>
+                    <Card.Body>
+                        <Card.Title>Service Commander</Card.Title>
+                        <Card.Text>
+                            Service Commander is a tool to help you manage your services.
+                        </Card.Text>
+                        <Form onSubmit={handleSubmit}>
+                        <Form.Group>
+                            <Form.Control required placeholder='Name' type="text" value={serviceName} onChange={e => setServiceName(e.target.value)} />
+                        </Form.Group>
+                        <Form.Group className='my-2'>
+                            <Form.Control required placeholder='Directory' type="text" value={serviceDirectory} onChange={e => setServiceDirectory(e.target.value)} />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Create Service
+                        </Button>
+                    </Form>
+                    </Card.Body>
+                </Card>
+
+                </Col>
+            </Row>
+            <Row className='my-4'>
+                <Col>
+                    <h2>Services</h2>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Accordion>
+                        {services.map((service, index) => (
+
+                            <Accordion.Item eventKey={index.toString()}>
+                                <Accordion.Header>{service.name}</Accordion.Header>
+                                <Accordion.Body className='w-full flex justify-content-between' >
+                                    <Button
+                                        onClick={() => {
+                                            dispatch(deleteServiceAction(service.id as number) as any as UnknownAction);
+                                        }}
+                                    variant="danger">Delete</Button>
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => {
+                                        }}
+                                    >Open</Button>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        ))}
+                    </Accordion>
+                </Col>
+            </Row>
+        </Container>
+    );
 };
 
 export default App;

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, UnknownAction } from '@reduxjs/toolkit';
 import { Service } from '../../../Types';
 import { createService, deleteService, getServices, updateService } from '../../lib/api';
 
@@ -12,6 +12,12 @@ const initialState: ServiceState = {
     services: [],
     isLoading: false,
 };
+
+// Selectors
+export const selectServices = (state: { services: ServiceState }) => state.services.services;
+export const selectIsLoading = (state: { services: ServiceState }) => state.services.isLoading;
+export const selectError = (state: { services: ServiceState }) => state.services.error;
+
 
 const serviceSlice = createSlice({
     name: 'services',
