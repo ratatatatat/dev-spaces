@@ -7,13 +7,17 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'babel-loader',
+        use: ['babel-loader'],
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.css'],
   },
   output: {
     filename: 'bundle.js',
