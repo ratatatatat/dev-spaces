@@ -99,7 +99,6 @@ export const initiateServicesAction = () => async (dispatch: any) => {
 
 export const createTerminalAction = (serviceId: number) => async (dispatch: any, getState: any) => {
     try {
-        dispatch(serviceSlice.actions.setLoading(true));
         const state = getState();
         const {
             terminalId
@@ -108,11 +107,17 @@ export const createTerminalAction = (serviceId: number) => async (dispatch: any,
         dispatch(serviceSlice.actions.updateService({ ...service, terminals: [...service.terminals, terminalId] }));
     } catch (error: any) {
         dispatch(serviceSlice.actions.setError(error.toString()));
-    } finally {
-        dispatch(serviceSlice.actions.setLoading(false));
     }
 }
 
-
+export const deleteTerminalAction = (serviceId: number, terminalId: string) => async (dispatch: any, getState: any) => {
+    try {
+        const state = getState();
+        const service = selectService(serviceId)(state) as ServiceWithTerminals;
+        dispatch(serviceSlice.actions.updateService({ ...service, terminals: service.terminals.filter((id) => id !== terminalId) }));
+    } catch (error: any) {
+        dispatch(serviceSlice.actions.setError(error.toString()));
+    }
+}
 
 export default serviceSlice.reducer;

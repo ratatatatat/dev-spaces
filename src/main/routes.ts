@@ -45,6 +45,21 @@ class TerminalManager {
         terminal.ptyProcess.kill();
         this.store[serviceId] = this.store[serviceId].filter((terminal) => terminal.id !== terminalId);
     };
+    kill() {
+        Object.values(this.store).forEach((terminals) => {
+            terminals.forEach((terminal) => {
+                terminal.ptyProcess.kill();
+            });
+        });
+        this.store = {};
+    };
+    killService(serviceId: number) {
+        const terminals = this.store[serviceId];
+        terminals.forEach((terminal) => {
+            terminal.ptyProcess.kill();
+        });
+        this.store[serviceId] = [];
+    }
 }
 
 class ServiceTerminalManager extends EventEmitter {
@@ -78,12 +93,11 @@ class ServiceTerminalManager extends EventEmitter {
     removeTerminal(serviceId: number, terminalId: string) {
         this.terminalManager.removeTerminal(serviceId, terminalId);
     };
+    killService(serviceId: number) {
+        this.terminalManager.killService(serviceId);
+    }
     kill() {
-        Object.values(this.terminalManager.store).forEach((terminals) => {
-            terminals.forEach((terminal) => {
-                terminal.ptyProcess.kill();
-            });
-        });
+        this.terminalManager.kill();
     }
 }
 
@@ -220,6 +234,8 @@ router.delete('/services/:serviceId', async (req: Request, res) => {
     const serviceRequest = req as ServiceRequest;
     try {
         const changes = await deleteService(serviceRequest.serviceId);
+        // Kill all terminals for this service
+        serviceTerminalManager.killService(serviceRequest.serviceId);
         if (changes) {
             res.status(204).send();
         } else {
