@@ -6,7 +6,7 @@ export interface Service {
 
 export type DBService = Service & { id: number };
 
-export type ServiceWithTerminals = Service & { terminals: string[] };
+export type ServiceWithTerminals = DBService & { terminals: string[] };
 
 export interface ServiceTerminalData {
     serviceId: number;

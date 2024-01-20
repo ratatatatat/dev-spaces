@@ -1,13 +1,9 @@
 import { createSlice, PayloadAction, UnknownAction } from '@reduxjs/toolkit';
-import { Service } from '../../../Types';
-import { createService, deleteService, getServices, updateService } from '../../lib/api';
-
-interface ServiceWithTerminals extends Service {
-    terminals: string[];
-};
+import { Service, ServiceWithTerminals } from '../../../Types';
+import { createService, createTerminal, deleteService, getServices, updateService } from '../../lib/api';
 
 interface ServiceState {
-    services: Service[];
+    services: ServiceWithTerminals[];
     isLoading: boolean;
     error?: string;
 };
@@ -21,13 +17,13 @@ const initialState: ServiceState = {
 export const selectServices = (state: { services: ServiceState }) => state.services.services;
 export const selectIsLoading = (state: { services: ServiceState }) => state.services.isLoading;
 export const selectError = (state: { services: ServiceState }) => state.services.error;
-
+export const selectService = (id: number) => (state: { services: ServiceState }) => state.services.services.find((service) => service.id === id);
 
 const serviceSlice = createSlice({
     name: 'services',
     initialState,
     reducers: {
-        addService: (state, action: PayloadAction<Service>) => {
+        addService: (state, action: PayloadAction<ServiceWithTerminals>) => {
             (action.payload as ServiceWithTerminals).terminals = [];
             state.services.push(action.payload);
         },
@@ -100,6 +96,22 @@ export const initiateServicesAction = () => async (dispatch: any) => {
         dispatch(serviceSlice.actions.setLoading(false));
     }
 };
+
+export const createTerminalAction = (serviceId: number) => async (dispatch: any, getState: any) => {
+    try {
+        dispatch(serviceSlice.actions.setLoading(true));
+        const state = getState();
+        const {
+            terminalId
+        } = await createTerminal(serviceId);
+        const service = selectService(serviceId)(state) as ServiceWithTerminals;
+        dispatch(serviceSlice.actions.updateService({ ...service, terminals: [...service.terminals, terminalId] }));
+    } catch (error: any) {
+        dispatch(serviceSlice.actions.setError(error.toString()));
+    } finally {
+        dispatch(serviceSlice.actions.setLoading(false));
+    }
+}
 
 
 

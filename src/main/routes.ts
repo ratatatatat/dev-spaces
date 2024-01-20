@@ -15,7 +15,7 @@ const db = new sqlite3.Database('./services.db');
 class Terminal {
     id: string;
     ptyProcess: IPty;
-    constructor(service: Service, ptyProcess: IPty) {
+    constructor(ptyProcess: IPty) {
         this.id = uuidv4();
         this.ptyProcess = ptyProcess;
     }
@@ -63,7 +63,7 @@ class ServiceTerminalManager extends EventEmitter {
                 env: process.env as Record<string, string>,
             }
         );
-        const terminal = new Terminal(service, terminalPty);
+        const terminal = new Terminal(terminalPty);
         terminal.ptyProcess.onData((data) => {
             const payload = {
                 serviceId: service.id,
@@ -167,7 +167,9 @@ router.get('/services', async (req, res) => {
 router.post('/services', async (req, res) => {
     try {
         const dbService = await createService(req.body as Service);
-        res.status(201).json(dbService);
+        res.status(201).json(
+            enrichServiceWithTerminals(dbService)
+        );
     } catch (err) {
         res.status(500).send(err);
     }
@@ -187,7 +189,9 @@ router.get('/services/:serviceId', async (req: Request, res) => {
     try {
         const row = await getServiceById(serviceRequest.serviceId as number);
         if (row) {
-            res.json(row);
+            res.json(
+                enrichServiceWithTerminals(row)
+            );
         } else {
             res.status(404).send('Service not found');
         }
@@ -201,7 +205,9 @@ router.put('/services/:serviceId', async (req: Request, res) => {
     try {
         const service = await updateService(serviceRequest.serviceId, req.body as Service);
         if (service) {
-            res.json(service);
+            res.json(
+                enrichServiceWithTerminals(service)
+            );
         } else {
             res.status(404).send('Service not found');
         }
