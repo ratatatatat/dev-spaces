@@ -2,6 +2,10 @@ import { createSlice, PayloadAction, UnknownAction } from '@reduxjs/toolkit';
 import { Service } from '../../../Types';
 import { createService, deleteService, getServices, updateService } from '../../lib/api';
 
+interface ServiceWithTerminals extends Service {
+    terminals: string[];
+};
+
 interface ServiceState {
     services: Service[];
     isLoading: boolean;
@@ -24,16 +28,17 @@ const serviceSlice = createSlice({
     initialState,
     reducers: {
         addService: (state, action: PayloadAction<Service>) => {
+            (action.payload as ServiceWithTerminals).terminals = [];
             state.services.push(action.payload);
         },
         deleteService: (state, action: PayloadAction<number>) => {
             state.services = state.services.filter((service) => service.id !== action.payload);
         },
-        updateService: (state, action: PayloadAction<Service>) => {
+        updateService: (state, action: PayloadAction<ServiceWithTerminals>) => {
             const index = state.services.findIndex((service) => service.id === action.payload.id);
             state.services[index] = action.payload;
         },
-        initiateServices: (state, action: PayloadAction<Service[]>) => {
+        initiateServices: (state, action: PayloadAction<ServiceWithTerminals[]>) => {
             state.services = action.payload;
         },
         setError: (state, action: PayloadAction<string>) => {
@@ -69,11 +74,12 @@ export const deleteServiceAction = (id: number) => async (dispatch: any) => {
     }
 };
 
-export const updateServiceAction = (id: number, service: Omit<Service, 'id'>) => async (dispatch: any) => {
+export const updateServiceAction = (id: number, service: Omit<ServiceWithTerminals, 'id'>) => async (dispatch: any) => {
     try {
         dispatch(serviceSlice.actions.setLoading(true));
         const updatedService = await updateService(id, service);
-        dispatch(serviceSlice.actions.updateService(updatedService));
+        (updatedService as ServiceWithTerminals).terminals = service.terminals;
+        dispatch(serviceSlice.actions.updateService(updatedService as ServiceWithTerminals));
     } catch (error: any) {
         dispatch(serviceSlice.actions.setError(error.toString()));
     } finally {
@@ -84,7 +90,9 @@ export const updateServiceAction = (id: number, service: Omit<Service, 'id'>) =>
 export const initiateServicesAction = () => async (dispatch: any) => {
     try {
         dispatch(serviceSlice.actions.setLoading(true));
-        const services = await getServices();
+        const services = (await getServices()).map((service) => {
+            return { ...service, terminals: [] };
+        });
         dispatch(serviceSlice.actions.initiateServices(services));
     } catch (error: any) {
         dispatch(serviceSlice.actions.setError(error.toString()));
@@ -92,5 +100,7 @@ export const initiateServicesAction = () => async (dispatch: any) => {
         dispatch(serviceSlice.actions.setLoading(false));
     }
 };
+
+
 
 export default serviceSlice.reducer;

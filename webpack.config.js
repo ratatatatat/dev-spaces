@@ -28,4 +28,16 @@ module.exports = {
       template: './src/renderer/index.html',
     }),
   ],
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
+    port: 9000,
+    hot: true,
+    client: {
+      logging: 'error',
+      overlay: false, // This line hides the error overlay
+    },
+  },
 };

@@ -2,7 +2,8 @@ import { app, BrowserWindow } from 'electron';
 import express from 'express';
 import * as path from 'path';
 import * as url from 'url';
-import routes from './routes'; // Import the routes
+import * as chokidar from 'chokidar';
+import routes, {serviceTerminalManager} from './routes'; // Import the routes
 require('electron-reload')(path.join(__dirname, '../renderer'));
 
 let mainWindow: Electron.BrowserWindow | null;
@@ -29,19 +30,26 @@ const createWindow = () => {
       mainWindow = null;
     });
     mainWindow.loadURL(
-      url.format({
-        pathname: path.join(__dirname,'../', 'index.html'),
-        protocol: 'file:',
-        slashes: true,
-      })
+      'http://localhost:9000'
     );
+    serviceTerminalManager.on('data', payload => {
+      mainWindow?.webContents.send('service-terminal-data', payload);
+    })
   });
 
 }
 
+process.on('SIGINT', () => {
+  console.log('Ctrl+C was pressed, executing script...');
+  // Your script here
+  serviceTerminalManager.kill();
+  process.exit(0); // This line is needed to actually stop the application
+});
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
+  serviceTerminalManager.kill();
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -52,3 +60,4 @@ app.on('activate', () => {
     createWindow();
   }
 });
+

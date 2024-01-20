@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Accordion, Card, Button, Form, Container, Row, Col } from 'react-bootstrap';
 import { addServiceAction, deleteServiceAction, initiateServicesAction, selectServices } from './redux/slices/service';
 import { UnknownAction } from '@reduxjs/toolkit';
+import { Service } from '../Types';
 
 const App = () => {
     const [serviceName, setServiceName] = useState('');
@@ -25,11 +26,16 @@ const App = () => {
     }, []); // dispatch is stable and won't cause unnecessary re-renders
 
 
+    const openTerminal = (service: Service) => {
+        const randomUuid = Math.random().toString(36).substring(7);
+        
+    }
+
     return (
         <Container>
             <Row>
                 <Col>
-                <Card>
+                <Card className='my-4'>
                     <Card.Body>
                         <Card.Title>Service Commander</Card.Title>
                         <Card.Text>
@@ -51,7 +57,7 @@ const App = () => {
 
                 </Col>
             </Row>
-            <Row className='my-4'>
+            <Row>
                 <Col>
                     <h2>Services</h2>
                 </Col>
