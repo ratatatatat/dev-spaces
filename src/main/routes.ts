@@ -3,10 +3,9 @@ import { DBService, Service, ServiceTerminalData, ServiceWithTerminals } from '.
 import sqlite3 from 'sqlite3';
 import { IPty } from 'node-pty';
 import { v4 as uuidv4 } from 'uuid';
-import pty from 'node-pty';
+import * as pty from 'node-pty';
 import os from 'os';
 import { EventEmitter } from 'stream';
-import PreviousMap from 'postcss/lib/previous-map';
 
 const router = express.Router();
 
