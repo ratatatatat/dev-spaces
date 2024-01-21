@@ -87,7 +87,7 @@ export const initiateServicesAction = () => async (dispatch: any) => {
     try {
         dispatch(serviceSlice.actions.setLoading(true));
         const services = (await getServices()).map((service) => {
-            return { ...service, terminals: [] };
+            return { ...service};
         });
         dispatch(serviceSlice.actions.initiateServices(services));
     } catch (error: any) {

@@ -25,6 +25,7 @@ const App = () => {
 
     useEffect(() => {
         dispatch(initiateServicesAction() as any);
+
     }, []); // dispatch is stable and won't cause unnecessary re-renders
 
 
