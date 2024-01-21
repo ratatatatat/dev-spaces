@@ -32,7 +32,7 @@ class TerminalManager {
         this.store[serviceId].push(terminal);
     };
     getTerminals(serviceId: number) {
-        return this.store[serviceId];
+        return this.store[serviceId] || [];
     };
     getTerminal(serviceId: number, terminalId: string) {
         return this.store[serviceId].find((terminal) => terminal.id === terminalId);
@@ -54,7 +54,7 @@ class TerminalManager {
         this.store = {};
     };
     killService(serviceId: number) {
-        const terminals = this.store[serviceId];
+        const terminals = this.store[serviceId] || [];
         terminals.forEach((terminal) => {
             terminal.ptyProcess.kill();
         });
@@ -98,6 +98,12 @@ class ServiceTerminalManager extends EventEmitter {
     }
     kill() {
         this.terminalManager.kill();
+    }
+    sendTerminalData(payload: ServiceTerminalData) {
+        const terminal = this.terminalManager.getTerminal(payload.serviceId, payload.terminalId);
+        if (terminal) {
+            terminal.ptyProcess.write(payload.data);
+        }
     }
 }
 
@@ -156,7 +162,7 @@ const deleteService = (id: number) => {
     return new Promise((resolve, reject) => {
         db.run('DELETE FROM services WHERE id = ?', id, function (err) {
             if (err) reject(err);
-            else resolve(undefined);
+            else resolve(this.changes);
         });
     });
 };
@@ -200,49 +206,37 @@ router.use('/services/:serviceId', (req: Request, res, next) => {
 
 router.get('/services/:serviceId', async (req: Request, res) => {
     const serviceRequest = req as ServiceRequest;
-    try {
-        const row = await getServiceById(serviceRequest.serviceId as number);
-        if (row) {
-            res.json(
-                enrichServiceWithTerminals(row)
-            );
-        } else {
-            res.status(404).send('Service not found');
-        }
-    } catch (err) {
-        res.status(500).send(err);
+    const row = await getServiceById(serviceRequest.serviceId as number);
+    if (row) {
+        res.json(
+            enrichServiceWithTerminals(row)
+        );
+    } else {
+        res.status(404).send('Service not found');
     }
 });
 
 router.put('/services/:serviceId', async (req: Request, res) => {
     const serviceRequest = req as ServiceRequest;
-    try {
-        const service = await updateService(serviceRequest.serviceId, req.body as Service);
-        if (service) {
-            res.json(
-                enrichServiceWithTerminals(service)
-            );
-        } else {
-            res.status(404).send('Service not found');
-        }
-    } catch (err) {
-        res.status(500).send(err);
+    const service = await updateService(serviceRequest.serviceId, req.body as Service);
+    if (service) {
+        res.json(
+            enrichServiceWithTerminals(service)
+        );
+    } else {
+        res.status(404).send('Service not found');
     }
 });
 
 router.delete('/services/:serviceId', async (req: Request, res) => {
     const serviceRequest = req as ServiceRequest;
-    try {
-        const changes = await deleteService(serviceRequest.serviceId);
-        // Kill all terminals for this service
-        serviceTerminalManager.killService(serviceRequest.serviceId);
-        if (changes) {
-            res.status(204).send();
-        } else {
-            res.status(404).send('Service not found');
-        }
-    } catch (err) {
-        res.status(500).send(err);
+    const changes = await deleteService(serviceRequest.serviceId);
+    // Kill all terminals for this service
+    serviceTerminalManager.killService(serviceRequest.serviceId);
+    if (changes) {
+        res.status(204).send();
+    } else {
+        res.status(404).send('Service not found');
     }
 });
 

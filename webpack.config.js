@@ -39,5 +39,8 @@ module.exports = {
       logging: 'error',
       overlay: false, // This line hides the error overlay
     },
+    headers: {
+      "X-Content-Type-Options": "nosniff"
+    }
   },
 };

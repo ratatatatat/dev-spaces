@@ -1,16 +1,16 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import express from 'express';
 import * as path from 'path';
-import * as url from 'url';
-import * as chokidar from 'chokidar';
+import cors from 'cors'; // Import the cors module
 import routes, {serviceTerminalManager} from './routes'; // Import the routes
-require('electron-reload')(path.join(__dirname, '../renderer'));
+import * as url from 'url';
 
 let mainWindow: Electron.BrowserWindow | null;
 
 
 const createWindow = () => {
   const server = express();
+  server.use(cors()); // Enable CORS for all domains
   server.use(express.json());
   server.use(express.urlencoded({ extended: true }));
   server.use('/', routes); // Add routes to express server
@@ -23,17 +23,30 @@ const createWindow = () => {
       title: 'Service Commander',
       webPreferences: {
         nodeIntegration: true,
-        contextIsolation: false,
+        contextIsolation: true,
+        preload: path.join(__dirname, 'preload.js'), // path to your preload script
       },
     });
     mainWindow.on('closed', () => {
       mainWindow = null;
     });
+    serviceTerminalManager.on('data', payload => {
+      mainWindow?.webContents.send('service-terminal-data', payload);
+    })
+    mainWindow.webContents.openDevTools(); // Open the DevTools
     mainWindow.loadURL(
       'http://localhost:9000'
     );
-    serviceTerminalManager.on('data', payload => {
-      mainWindow?.webContents.send('service-terminal-data', payload);
+    // mainWindow.loadURL(
+    //   url.format({
+    //     pathname: path.join(__dirname,'../', 'index.html'),
+    //     protocol: 'file:',
+    //     slashes: true,
+    //   })
+    // )
+    mainWindow.loadURL('http://localhost:9000');
+    ipcMain.on('service-terminal-data', (event, payload) => {
+      serviceTerminalManager.sendTerminalData(payload);
     })
   });
 
