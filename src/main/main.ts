@@ -4,6 +4,8 @@ import * as path from 'path';
 import cors from 'cors'; // Import the cors module
 import routes, {serviceTerminalManager} from './routes'; // Import the routes
 import * as url from 'url';
+import { DBService } from '../Types';
+import { exec } from 'child_process';
 
 let mainWindow: Electron.BrowserWindow | null;
 
@@ -34,9 +36,9 @@ const createWindow = () => {
       mainWindow?.webContents.send('service-terminal-data', payload);
     })
     mainWindow.webContents.openDevTools(); // Open the DevTools
-    mainWindow.loadURL(
-      'http://localhost:9000'
-    );
+    // mainWindow.loadURL(
+    //   'http://localhost:9000'
+    // );
     // mainWindow.loadURL(
     //   url.format({
     //     pathname: path.join(__dirname,'../', 'index.html'),
@@ -48,6 +50,12 @@ const createWindow = () => {
     ipcMain.on('service-terminal-data', (event, payload) => {
       serviceTerminalManager.sendTerminalData(payload);
     })
+    ipcMain.on('open-code', (event, payload: DBService) => {
+      exec(`code ${payload.directoryPath}`);
+    });
+    ipcMain.on('open-directory', (event, payload: DBService) => {
+      exec(`open ${payload.directoryPath}`);
+    });
   });
 
 }
