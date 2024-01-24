@@ -1,7 +1,10 @@
 import sqlite3 from 'sqlite3';
 import { DBService, Service } from '../Types';
+import { app } from 'electron';
+import path from 'path';
 
-const db = new sqlite3.Database('./services.db');
+const dbPath = path.join(app.getPath('userData'), 'services.db');
+const db = new sqlite3.Database(dbPath);
 
 db.run(`CREATE TABLE IF NOT EXISTS services (
     id INTEGER PRIMARY KEY,

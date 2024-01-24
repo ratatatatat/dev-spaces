@@ -6,21 +6,40 @@ import routes, { serviceTerminalManager } from './routes'; // Import the routes
 import * as url from 'url';
 import { DBService } from '../Types';
 import { exec } from 'child_process';
-import { Tray } from 'electron';
+import log from 'electron-log';
+// import('fix-path').then((fixPath: any) => {
+// 	// console.log('fixPath', fixPath.default());
+// 	fixPath.default();
+// })
 
 let mainWindow: Electron.BrowserWindow | null;
-let tray: Tray | null;
+process.on('uncaughtException', (error) => {
+	log.error(error);
+});
 
 const registerMainEvents = () => {
 	ipcMain.on('service-terminal-data', (event, payload) => {
 		serviceTerminalManager.sendTerminalData(payload);
 	})
 	ipcMain.on('open-code', (event, payload: DBService) => {
-		exec(`code ${payload.directoryPath}`);
+		exec(`code ${payload.directoryPath}`, (error, stdout) => {
+			if (error) {
+				log.error(`Error opening code: ${error.message}`);
+				return;
+			}
+			log.info(`Output: ${stdout}`);
+		});
 	});
+	
 	ipcMain.on('open-directory', (event, payload: DBService) => {
-		exec(`open ${payload.directoryPath}`);
-	});
+		exec(`open ${payload.directoryPath}`, (error, stdout) => {
+			if (error) {
+				log.error(`Error opening directory: ${error.message}`);
+				return;
+			}
+			log.info(`Output: ${stdout}`);
+		});
+	})
 };
 
 const teardown = () => {

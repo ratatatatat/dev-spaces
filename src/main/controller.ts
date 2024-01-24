@@ -74,7 +74,7 @@ export const createNewServiceTerminalHandler = async (req: Request, res: Respons
         res.status(404).send('Service not found');
         return;
     }
-    const terminal = serviceTerminalManager.createTerminal({ id: service.id, ...req.body });
+    const terminal = serviceTerminalManager.createTerminal(service);
     res.json({ terminalId: terminal.id, serviceId: service.id });
 }
 
