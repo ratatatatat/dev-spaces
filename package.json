@@ -8,7 +8,7 @@
     "build": "tsc && webpack",
     "build-client": "webpack",
     "watch": "nodemon -w /src/renderer/ --exec \"npm run build-client\"",
-    "start": "npm run build && electron .",
+    "start": "npm run build && NODE_ENV=development electron .",
     "start:dev": "webpack serve --open",
     "package": "electron-builder"
   },
@@ -53,7 +53,6 @@
     "cors": "^2.8.5",
     "electron-log": "^5.0.3",
     "express": "^4.18.2",
-    "fix-path": "^4.0.0",
     "install": "^0.13.0",
     "node-pty": "^1.0.0",
     "npm": "^10.3.0",
