@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import express from 'express';
 import * as path from 'path';
 import cors from 'cors'; // Import the cors module
@@ -26,7 +26,6 @@ const registerMainEvents = () => {
 				log.error(`Error opening code: ${error.message}`);
 				return;
 			}
-			log.info(`Output: ${stdout}`);
 		});
 	});
 	
@@ -36,9 +35,11 @@ const registerMainEvents = () => {
 				log.error(`Error opening directory: ${error.message}`);
 				return;
 			}
-			log.info(`Output: ${stdout}`);
 		});
 	})
+	ipcMain.on('open-external', (event, { url }: { url: string}) => {
+		shell.openExternal(url);
+	});
 };
 
 const teardown = () => {
@@ -122,5 +123,4 @@ app.on('activate', () => {
 
 app.on('quit', () => {
 	teardown();
-	console.log('App has quit');
 });

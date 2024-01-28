@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Card, Form, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { addServiceAction } from '../../redux/slices/service';
+import translations from '../../translations/en';
 
 const ServiceForm = () => {
     const [serviceName, setServiceName] = useState('');
@@ -22,25 +23,74 @@ const ServiceForm = () => {
     };
 
     return (
-        <Card className='my-4'>
+        <Card>
             <Card.Body>
-                <Card.Title>Service Commander</Card.Title>
+                <Card.Title>
+                    {
+                        translations.title
+                    }
+                </Card.Title>
                 <Card.Text>
-                    Service Commander is a tool to help you manage your services.
+                    {
+                        translations.description
+                    }
+                    <br />
+                    <br />
+                    {
+                        translations.subDescription
+                    }
                 </Card.Text>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group>
-                        <Form.Control required placeholder='Name' type="text" value={serviceName} onChange={e => setServiceName(e.target.value)} />
+                        <Form.Label>
+                            {
+                                translations.newServiceNameLabel
+                            }
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            placeholder={translations.newServiceNamePlaceholder}
+                            type="text"
+                            value={serviceName}
+                            onChange={e => setServiceName(e.target.value)}
+                        />
+                        <Form.Text>
+                            {
+                                translations.newServiceNameDescription
+                            }
+                        </Form.Text>
                     </Form.Group>
                     <Form.Group className='my-2'>
-                        <Form.Control required placeholder='Directory' type="text" value={serviceDirectory} onChange={e => setServiceDirectory(e.target.value)} />
+                        <Form.Label>
+                            {
+                                translations.newServiceDirectoryLabel
+                            }
+                        </Form.Label>
+                        <Form.Control 
+                            required 
+                            placeholder={
+                                translations.newServiceDirectoryPlaceholder
+                            }
+                            type="text" 
+                            value={serviceDirectory}
+                            onChange={e => setServiceDirectory(e.target.value)} />
+                        <Form.Text>
+                            {
+                                translations.newServiceDirectoryDescription
+                            }
+                        </Form.Text>
                     </Form.Group>
                     <Button
+                        style={{
+                            marginTop: '10px',
+                        }}
                         variant="primary"
                         type="submit"
                         disabled={serviceName === '' || serviceDirectory === ''}
                     >
-                        Create Service
+                        {
+                            translations.newServiceButton
+                        }
                     </Button>
                 </Form>
             </Card.Body>

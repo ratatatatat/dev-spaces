@@ -6,6 +6,8 @@ import ServiceForm from './components/ServiceForm';
 import TerminalsList from './components/TerminalList';
 import ServiceActionBar from './components/ServiceActionBar';
 import { DBService } from '../Types';
+import Layout from './components/Dashboard';
+import ContributeCard from './components/ContributionBar';
 
 declare global {
     interface Window {
@@ -18,27 +20,19 @@ declare global {
     }
 }
 
+const LeftSection = () => {
+    return <div className='flex h-full flex-col justify-between'>
+        <ServiceForm />
+        <ContributeCard />
+    </div>
+};
 
-const App = () => {
-    const dispatch = useDispatch();
+const RightSection = () => {
     const services = useSelector(selectServices);
-
-    useEffect(() => {
-        dispatch(initiateServicesAction() as any);
-
-    }, []); // dispatch is stable and won't cause unnecessary re-renders
-
-
-    return (
-        <Container>
+    return <>
             <Row>
                 <Col>
-                    <ServiceForm />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <h2>Services</h2>
+                    <h2>Spaces</h2>
                 </Col>
             </Row>
             <Row>
@@ -72,7 +66,20 @@ const App = () => {
                     </Accordion>
                 </Col>
             </Row>
-        </Container>
+    </>
+};
+
+
+const App = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(initiateServicesAction() as any);
+    }, []); // dispatch is stable and won't cause unnecessary re-renders
+    return (
+        <Layout
+            leftSection={<LeftSection />}
+            rightSection={<RightSection />}
+        />
     );
 };
 
