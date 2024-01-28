@@ -13,7 +13,7 @@
     "build": "npm run clean && tsc && webpack",
     "start": "npm run build && NODE_ENV=development electron .",
     "start:dev": "webpack serve --open",
-    "package": "electron-builder"
+    "package": "npm run build && electron-builder"
   },
   "author": "Rajiv Puri",
   "license": "ISC",
@@ -73,13 +73,16 @@
   "build": {
     "appId": "yAPP_ID",
     "mac": {
-      "icon": "1024.icns"
+      "icon": "icon.ics"
     },
     "win": {
       "icon": "1024.ico"
     },
     "files": [
       "dist/**/*"
-    ]
+    ],
+    "directories": {
+      "output": "build"
+    }
   }
 }
