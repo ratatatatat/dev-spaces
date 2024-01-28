@@ -9,9 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && webpack",
-    "build-client": "webpack",
-    "watch": "nodemon -w /src/renderer/ --exec \"npm run build-client\"",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc && webpack",
     "start": "npm run build && NODE_ENV=development electron .",
     "start:dev": "webpack serve --open",
     "package": "electron-builder"
