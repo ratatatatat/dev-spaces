@@ -1,5 +1,5 @@
 {
-  "name": "service-commander",
+  "name": "dev-spaces",
   "version": "1.0.0",
   "description": "A tool to organize development across multiple repos",
   "main": "dist/src/main/main.js",
