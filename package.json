@@ -5,7 +5,7 @@
   "main": "dist/src/main/main.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ratatatatat/service-commander.git"
+    "url": "git+https://github.com/ratatatatat/dev-spaces.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,9 @@
     "build": "npm run clean && tsc && webpack",
     "start": "npm run build && NODE_ENV=development electron .",
     "start:dev": "webpack serve --open",
+    "clean:build": "rm -rf build",
     "package": "npm run build && electron-builder",
+    "release": "npm run build && npm run clean:build && electron-builder --publish=always",
     "prepare": "husky install"
   },
   "author": "Rajiv Puri",

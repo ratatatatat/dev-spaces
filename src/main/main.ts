@@ -1,4 +1,10 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import {
+	app,
+	BrowserWindow,
+	ipcMain,
+	shell,
+	screen,
+} from 'electron';
 import express from 'express';
 import * as path from 'path';
 import cors from 'cors'; // Import the cors module
@@ -77,10 +83,10 @@ const startServer = (): Promise<void> => {
 };
 
 const createWindow = () => {
+	const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 	mainWindow = new BrowserWindow({
-		width: 1000,
-		minWidth: 1000,
-		height: 600,
+		width: width,
+		height: height,
 		title: 'Service Commander',
 		icon: path.join(__dirname, "./assets/icons/Template64.png"),
 		webPreferences: {
