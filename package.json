@@ -1,6 +1,6 @@
 {
   "name": "dev-spaces",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tool to organize development across multiple repos",
   "main": "dist/src/main/main.js",
   "repository": {
