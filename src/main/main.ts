@@ -7,10 +7,12 @@ import * as url from 'url';
 import { DBService } from '../Types';
 import { exec } from 'child_process';
 import log from 'electron-log';
+import { AddressInfo } from 'net';
 
 let mainWindow: Electron.BrowserWindow | null;
 let server: express.Express;
 let initialized = false;
+let port: number | null = null;
 
 process.on('uncaughtException', (error) => {
 	log.error(error);
@@ -40,6 +42,9 @@ const registerMainEvents = () => {
 	ipcMain.on('open-external', (event, { url }: { url: string}) => {
 		shell.openExternal(url);
 	});
+	ipcMain.handle('get-server-port', () => {
+		return port;
+	});
 };
 
 const teardown = () => {
@@ -64,7 +69,8 @@ const startServer = (): Promise<void> => {
 		server.use(express.json());
 		server.use(express.urlencoded({ extended: true }));
 		server.use('/', routes); // Add routes to express server
-		server.listen(3000, () => {
+		let listener = server.listen(0, () => {
+			port = (listener.address() as AddressInfo).port;
 			resolve();
 		});
 	});
@@ -91,7 +97,7 @@ const createWindow = () => {
 	})
 	if (process.env.NODE_ENV === 'development') {
 		mainWindow.loadURL('http://localhost:9000');
-		mainWindow.webContents.openDevTools(); // Open the DevTools
+		mainWindow.webContents.openDevTools();
 	} else {
 		mainWindow.loadURL(
 			url.format({

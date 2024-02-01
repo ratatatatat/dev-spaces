@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld(
     ipcRenderer: {
       send: (channel: string, data: any) => ipcRenderer.send(channel, data),
       on: (channel: string, callback: () => any) => ipcRenderer.on(channel, callback)
-    }
+    },
+    getServerPort: () => ipcRenderer.invoke('get-server-port'),
   }
 );

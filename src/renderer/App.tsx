@@ -16,6 +16,7 @@ declare global {
                 send: (channel: string, data: any) => void;
                 on: (channel: string, callback: (event: any, ...args: any[]) => void) => void;
             };
+            getServerPort: () => Promise<number>;
         };
     }
 }
