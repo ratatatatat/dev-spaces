@@ -19,7 +19,7 @@ export const selectIsLoading = (state: { services: ServiceState }) => state.serv
 export const selectError = (state: { services: ServiceState }) => state.services.error;
 export const selectService = (id: number) => (state: { services: ServiceState }) => state.services.services.find((service) => service.id === id);
 
-const serviceSlice = createSlice({
+export const serviceSlice = createSlice({
     name: 'services',
     initialState,
     reducers: {

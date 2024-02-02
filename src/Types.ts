@@ -1,6 +1,7 @@
 export interface Service {
     directoryPath: string;
     name: string;
+    notes: string;
     id?: number;
 };
 

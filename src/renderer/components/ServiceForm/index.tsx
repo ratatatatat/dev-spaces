@@ -17,6 +17,7 @@ const ServiceForm = () => {
             addServiceAction({
                 name: serviceName,
                 directoryPath: serviceDirectory,
+                notes: '',
             }) as any as UnknownAction
         ); setServiceName('');
         setServiceDirectory('');
@@ -30,7 +31,7 @@ const ServiceForm = () => {
                         translations.title
                     }
                 </Card.Title>
-                <Card.Text>
+                <Card.Text className="text-sm">
                     {
                         translations.description
                     }

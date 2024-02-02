@@ -11,11 +11,6 @@ const getBaseUrl = async () => {
   return baseUrl;
 }
 
-const genEndpoint = async (endpoint: string) => {
-  const baseUrl = await getBaseUrl();
-  return `${baseUrl}${endpoint}`;
-}
-
 // Create a service
 export const createService = async (service: Omit<Service, 'id'>): Promise<ServiceWithTerminals> => {
   const baseUrl = await getBaseUrl();

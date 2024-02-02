@@ -1,6 +1,6 @@
 const translations = {
     title: "Dev Spaces",
-    description: "Your essential guide through the world of software development. Manage your repositories, keep track of important links, and jot down project notes, all in one place. Also open terminals directly in your project folders",
+    description: "For Devs with OCD. Manage your repositories, keep track of important links, and jot down project notes, all in one place. Also keep terminals in one place during development.",
     subDescription: 'Ideal for developers whose workflow typically spans multiple repositores.',
     newServiceNameLabel: 'Space Name',
     newServiceNameDescription: 'Space Name, you may want to call this Frontend or Backend',

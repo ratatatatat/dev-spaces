@@ -9,8 +9,16 @@ const db = new sqlite3.Database(dbPath);
 db.run(`CREATE TABLE IF NOT EXISTS services (
     id INTEGER PRIMARY KEY,
     name TEXT,
-    directoryPath TEXT
+    directoryPath TEXT,
+    notes TEXT DEFAULT ''
 )`);
+
+db.run(`ALTER TABLE services ADD COLUMN notes TEXT DEFAULT ''`, err => {
+    if (err) {
+      // This will likely fail if the column already exists, so we'll catch the error and do nothing
+      console.log('Notes column already exists');
+    }
+});
 
 
 export const getAllServices = (): Promise<DBService[]> => {
@@ -24,7 +32,7 @@ export const getAllServices = (): Promise<DBService[]> => {
 
 export const createService = (service: Service): Promise<DBService> => {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO services (name, directoryPath) VALUES (?, ?)', [service.name, service.directoryPath], function (err) {
+        db.run('INSERT INTO services (name, directoryPath, notes) VALUES (?, ?, ?)', [service.name, service.directoryPath, service.notes || ''], function (err) {
             if (err) reject(err);
             else resolve({
                 id: this.lastID,
@@ -45,7 +53,7 @@ export const getServiceById = (id: number): Promise<DBService> => {
 
 export const updateService = (id: number, service: Service): Promise<DBService> => {
     return new Promise((resolve, reject) => {
-        db.run('UPDATE services SET name = ?, directoryPath = ? WHERE id = ?', [service.name, service.directoryPath, id], function (err) {
+        db.run('UPDATE services SET name = ?, directoryPath = ?, notes = ? WHERE id = ?', [service.name, service.directoryPath, service.notes || '', id], function (err) {
             if (err) reject(err);
             else resolve({ ...service, id });
         });

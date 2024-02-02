@@ -87,7 +87,7 @@ const createWindow = () => {
 	mainWindow = new BrowserWindow({
 		width: width,
 		height: height,
-		title: 'Service Commander',
+		title: 'Dev Spaces',
 		icon: path.join(__dirname, "./assets/icons/Template64.png"),
 		webPreferences: {
 			nodeIntegration: true,
