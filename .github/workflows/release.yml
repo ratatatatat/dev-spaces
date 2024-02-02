@@ -19,7 +19,7 @@ jobs:
         node-version-file: .nvmrc
 
     - name: Install dependencies
-      run: npm ci --verbose
+      run: npm install --verbose
 
     - name: Build/release Electron app
       uses: samuelmeuli/action-electron-builder@v1
