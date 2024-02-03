@@ -29,7 +29,6 @@ jobs:
     - name: Build
       run: |
         echo "${{ secrets.mac_certs }}" > mac_certs.p12
-        sudo snap install snapcraft --classic
         npm run release
       env:
         CSC_LINK: ./mac_certs.p12
