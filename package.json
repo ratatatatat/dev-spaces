@@ -84,9 +84,7 @@
     "appId": "yAPP_ID",
     "mac": {
       "icon": "icon.ics",
-      "publish": [
-        "github"
-      ]
+      "target": "dmg"
     },
     "files": [
       "dist/**/*"
