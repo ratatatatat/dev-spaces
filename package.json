@@ -83,10 +83,10 @@
   "build": {
     "appId": "yAPP_ID",
     "mac": {
-      "icon": "icon.ics"
-    },
-    "win": {
-      "icon": "1024.ico"
+      "icon": "icon.ics",
+      "publish": [
+        "github"
+      ]
     },
     "files": [
       "dist/**/*"
