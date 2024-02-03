@@ -16,7 +16,8 @@
     "clean:build": "rm -rf build",
     "package": "npm run build && electron-builder",
     "release": "npm run build && npm run clean:build && electron-builder --mac --publish=always",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "electron-builder install-app-deps" 
   },
   "author": "Rajiv Puri",
   "license": "ISC",
