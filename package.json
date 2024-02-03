@@ -15,7 +15,7 @@
     "start:dev": "webpack serve --open",
     "clean:build": "rm -rf build",
     "package": "npm run build && electron-builder",
-    "release": "npm run build && npm run clean:build && electron-builder --mac --publish=always",
+    "release": "npm run build && npm run clean:build && electron-builder --publish=always",
     "prepare": "husky install",
     "postinstall": "electron-builder install-app-deps" 
   },
